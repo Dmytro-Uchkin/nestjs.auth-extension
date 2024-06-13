@@ -1,14 +1,19 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
+
 import { AppService } from './app.service';
-import { CoffeesModule } from './coffees/coffees.module';
+import { IamModule } from './iam/iam.module';
+import { AppController } from './app.controller';
 import { UsersModule } from './users/users.module';
+import { CoffeesModule } from './coffees/coffees.module';
 
 @Module({
   imports: [
+    IamModule,
     CoffeesModule,
     UsersModule,
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -19,6 +24,7 @@ import { UsersModule } from './users/users.module';
       autoLoadEntities: true,
       synchronize: true,
     }),
+    IamModule,
   ],
   controllers: [AppController],
   providers: [AppService],
