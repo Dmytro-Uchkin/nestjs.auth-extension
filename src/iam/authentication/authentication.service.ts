@@ -14,6 +14,7 @@ import { SignUpDto } from './dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import { HashingService } from '../hashing/hashing.service';
 import { User } from '../../users/entities/user.entity';
+import { ActiveUserData } from '../interfaces/active-user-data.interface';
 
 @Injectable()
 export class AuthenticationService {
@@ -65,7 +66,7 @@ export class AuthenticationService {
       {
         sub: user.id,
         email: email,
-      },
+      } as ActiveUserData,
       {
         audience: this.jwtConfiguration.audience,
         issuer: this.jwtConfiguration.issuer,
