@@ -6,6 +6,7 @@ import { SignInDto } from './dto/sign-in.dto';
 import { AuthType } from './enums/auth-type.enum';
 import { Auth } from './decorators/auth.decorator';
 import { AuthenticationService } from './authentication.service';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @ApiTags('Authentication')
 @Auth(AuthType.None)
@@ -18,6 +19,12 @@ export class AuthenticationController {
   @Post('sign-up')
   signUp(@Body() signUpDto: SignUpDto) {
     return this.authenticationService.signUp(signUpDto);
+  }
+
+  @Post('refresh-tokens')
+  @HttpCode(HttpStatus.OK)
+  refreshTokens(@Body() refreshTokenDto: RefreshTokenDto) {
+    return this.authenticationService.refreshTokens(refreshTokenDto);
   }
 
   @Post('sign-in')
