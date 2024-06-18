@@ -7,6 +7,7 @@ import { IamModule } from './iam/iam.module';
 import { AppController } from './app.controller';
 import { UsersModule } from './users/users.module';
 import { CoffeesModule } from './coffees/coffees.module';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { CoffeesModule } from './coffees/coffees.module';
       synchronize: true,
     }),
     IamModule,
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -12,14 +12,18 @@ import { AuthenticationService } from './authentication/authentication.service';
 import { AuthenticationController } from './authentication/authentication.controller';
 import { AccessTokenGuard } from './authentication/guards/access-token/access-token.guard';
 import { AuthenticationGuard } from './authentication/guards/authentication/authentication.guard';
+import { RedisService } from '../redis/redis.service';
+import redisConfig from '../redis/config/redis.config';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
     JwtModule.registerAsync(jwtConfig.asProvider()),
     ConfigModule.forFeature(jwtConfig),
+    ConfigModule.forFeature(redisConfig)
   ],
   providers: [
+    RedisService,
     AccessTokenGuard,
     AuthenticationService,
     {
