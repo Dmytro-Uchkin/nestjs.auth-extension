@@ -14,6 +14,7 @@ import { AccessTokenGuard } from './authentication/guards/access-token/access-to
 import { AuthenticationGuard } from './authentication/guards/authentication/authentication.guard';
 import { RedisService } from '../redis/redis.service';
 import redisConfig from '../redis/config/redis.config';
+import { RolesGuard } from './authorization/guards/roles/roles.guard';
 
 @Module({
   imports: [
@@ -33,6 +34,10 @@ import redisConfig from '../redis/config/redis.config';
     {
       provide: APP_GUARD,
       useClass: AuthenticationGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
   ],
   controllers: [AuthenticationController],
