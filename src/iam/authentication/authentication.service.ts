@@ -106,12 +106,12 @@ export class AuthenticationService {
       this.signToken<Partial<ActiveUserData>>(
         user.id,
         this.jwtConfiguration.accessTokenTtl,
-        { email: user.email, role: user.role },
+        { email: user.email, role: user.role, permissions: user.permissions },
       ),
       this.signToken<Partial<ActiveUserData>>(
         user.id,
         this.jwtConfiguration.refreshTokenTtl,
-        { email: user.email, role: user.role },
+        { email: user.email, role: user.role, permissions: user.permissions },
       ),
     ]);
 
