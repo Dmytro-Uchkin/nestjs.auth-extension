@@ -79,7 +79,10 @@ export class AuthenticationService {
       });
 
       const user = await this.usersRepository.findOneByOrFail({ id: sub });
-      const isRefreshTokenValid = await this.redisService.validate(user.id, refreshToken);
+      const isRefreshTokenValid = await this.redisService.validate(
+        user.id,
+        refreshToken,
+      );
 
       if (isRefreshTokenValid) {
         this.redisService.invalidate(user.id);
@@ -103,12 +106,12 @@ export class AuthenticationService {
       this.signToken<Partial<ActiveUserData>>(
         user.id,
         this.jwtConfiguration.accessTokenTtl,
-        { email: user.email },
+        { email: user.email, role: user.role },
       ),
       this.signToken<Partial<ActiveUserData>>(
         user.id,
         this.jwtConfiguration.refreshTokenTtl,
-        { email: user.email },
+        { email: user.email, role: user.role },
       ),
     ]);
 
