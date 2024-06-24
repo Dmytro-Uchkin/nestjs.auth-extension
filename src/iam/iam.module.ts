@@ -6,15 +6,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import jwtConfig from './config/jwt.config';
 import { User } from '../users/entities/user.entity';
+import redisConfig from '../redis/config/redis.config';
+import { RedisService } from '../redis/redis.service';
 import { BcryptService } from './hashing/bcrypt.service';
 import { HashingService } from './hashing/hashing.service';
+// import { RolesGuard } from './authorization/guards/roles/roles.guard';
 import { AuthenticationService } from './authentication/authentication.service';
 import { AuthenticationController } from './authentication/authentication.controller';
+import { PermissionsGuard } from './authorization/guards/roles/permissions.guard';
 import { AccessTokenGuard } from './authentication/guards/access-token/access-token.guard';
 import { AuthenticationGuard } from './authentication/guards/authentication/authentication.guard';
-import { RedisService } from '../redis/redis.service';
-import redisConfig from '../redis/config/redis.config';
-import { RolesGuard } from './authorization/guards/roles/roles.guard';
 
 @Module({
   imports: [
@@ -35,9 +36,13 @@ import { RolesGuard } from './authorization/guards/roles/roles.guard';
       provide: APP_GUARD,
       useClass: AuthenticationGuard,
     },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: RolesGuard,
+    // },
     {
       provide: APP_GUARD,
-      useClass: RolesGuard,
+      useClass: PermissionsGuard,
     },
   ],
   controllers: [AuthenticationController],
