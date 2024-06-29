@@ -11,11 +11,14 @@ import { RedisService } from '../redis/redis.service';
 import { BcryptService } from './hashing/bcrypt.service';
 import { HashingService } from './hashing/hashing.service';
 // import { RolesGuard } from './authorization/guards/roles/roles.guard';
+// import { PermissionsGuard } from './authorization/guards/permissions.guard';
 import { AuthenticationService } from './authentication/authentication.service';
 import { AuthenticationController } from './authentication/authentication.controller';
-import { PermissionsGuard } from './authorization/guards/roles/permissions.guard';
 import { AccessTokenGuard } from './authentication/guards/access-token/access-token.guard';
 import { AuthenticationGuard } from './authentication/guards/authentication/authentication.guard';
+import { GmailEmailPolicyHandler } from './authorization/policies/gmail-email.policy';
+import { PolicyHandlerStorage } from './authorization/policies/policy-handlers.storage';
+import { PoliciesGuard } from './authorization/guards/policies.guard';
 
 @Module({
   imports: [
@@ -40,10 +43,16 @@ import { AuthenticationGuard } from './authentication/guards/authentication/auth
     //   provide: APP_GUARD,
     //   useClass: RolesGuard,
     // },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: PermissionsGuard,
+    // },
     {
       provide: APP_GUARD,
-      useClass: PermissionsGuard,
+      useClass: PoliciesGuard,
     },
+    PolicyHandlerStorage,
+    GmailEmailPolicyHandler
   ],
   controllers: [AuthenticationController],
 })
