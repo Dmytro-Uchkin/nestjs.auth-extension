@@ -6,6 +6,8 @@ import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 import { Permission } from '../iam/authorization/permission.type';
 import { Permissions } from '../iam/authorization/decorators/permissions.decorator';
+import { Policies } from '../iam/authorization/decorators/policies.decorator';
+import { GmailEmailPolicy } from 'src/iam/authorization/policies/gmail-email.policy';
 // import { Roles } from '../iam/authorization/decorators/roles.decorator';
 // import { Role } from '../users/enums/role.enum';
 
@@ -16,7 +18,8 @@ export class CoffeesController {
 
   @Post()
   // @Roles(Role.Admin)
-  @Permissions(Permission.CreateCoffee)
+  // @Permissions(Permission.CreateCoffee)
+  @Policies(new GmailEmailPolicy())
   create(@Body() createCoffeeDto: CreateCoffeeDto) {
     return this.coffeesService.create(createCoffeeDto);
   }
