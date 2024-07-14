@@ -19,16 +19,20 @@ import { AuthenticationGuard } from './authentication/guards/authentication/auth
 import { GmailEmailPolicyHandler } from './authorization/policies/gmail-email.policy';
 import { PolicyHandlerStorage } from './authorization/policies/policy-handlers.storage';
 import { PoliciesGuard } from './authorization/guards/policies.guard';
+import { ApiKeysService } from './authentication/api-keys.service';
+import { ApiKeyGuard } from './authentication/guards/api-key/api-key.guard';
+import { ApiKey } from '../users/api-keys/entities/api-key.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, ApiKey]),
     JwtModule.registerAsync(jwtConfig.asProvider()),
     ConfigModule.forFeature(jwtConfig),
     ConfigModule.forFeature(redisConfig)
   ],
   providers: [
     RedisService,
+    ApiKeyGuard,
     AccessTokenGuard,
     AuthenticationService,
     {
@@ -52,7 +56,8 @@ import { PoliciesGuard } from './authorization/guards/policies.guard';
       useClass: PoliciesGuard,
     },
     PolicyHandlerStorage,
-    GmailEmailPolicyHandler
+    GmailEmailPolicyHandler,
+    ApiKeysService,
   ],
   controllers: [AuthenticationController],
 })
