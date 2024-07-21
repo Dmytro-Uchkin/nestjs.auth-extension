@@ -11,11 +11,15 @@ export class User {
   @Column({ unique: true })
   email: string;
 
-  @Column()
+  @Column({ nullable: true })
   password: string;
 
   @Column({ enum: Role, default: Role.Regular })
   role: Role;
+
+
+  @Column({ nullable: true })
+  googleId: string;
 
   // -----
   // 📝 ADDITIONS - user.entity.ts - add permissions prop

@@ -22,19 +22,22 @@ import { PoliciesGuard } from './authorization/guards/policies.guard';
 import { ApiKeysService } from './authentication/api-keys.service';
 import { ApiKeyGuard } from './authentication/guards/api-key/api-key.guard';
 import { ApiKey } from '../users/api-keys/entities/api-key.entity';
+import { GoogleAuthenticationService } from './authentication/social/google-authentication.service';
+import { GoogleAuthenticationController } from './authentication/social/google-authentication.controller';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User, ApiKey]),
     JwtModule.registerAsync(jwtConfig.asProvider()),
     ConfigModule.forFeature(jwtConfig),
-    ConfigModule.forFeature(redisConfig)
+    ConfigModule.forFeature(redisConfig),
   ],
   providers: [
     RedisService,
     ApiKeyGuard,
     AccessTokenGuard,
     AuthenticationService,
+    GoogleAuthenticationService,
     {
       provide: HashingService,
       useClass: BcryptService,
@@ -59,6 +62,6 @@ import { ApiKey } from '../users/api-keys/entities/api-key.entity';
     GmailEmailPolicyHandler,
     ApiKeysService,
   ],
-  controllers: [AuthenticationController],
+  controllers: [AuthenticationController, GoogleAuthenticationController],
 })
 export class IamModule {}
