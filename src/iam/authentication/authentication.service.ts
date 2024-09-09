@@ -17,6 +17,7 @@ import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { InvalidatedRefreshTokenError, RedisService } from '../../redis/redis.service';
 import { HashingService } from '../hashing/hashing.service';
 import { ActiveUserData } from '../interfaces/active-user-data.interface';
+import { OtpAuthenticationService } from './otp-authentication.service';
 
 @Injectable()
 export class AuthenticationService {
@@ -28,6 +29,7 @@ export class AuthenticationService {
     private readonly hashingService: HashingService,
     private readonly jwtService: JwtService,
     private readonly redisService: RedisService,
+    private readonly otpAuthService: OtpAuthenticationService,
   ) {}
 
   async signUp(signUpDto: SignUpDto) {
@@ -47,7 +49,7 @@ export class AuthenticationService {
     }
   }
 
-  async signIn({ password, email }: SignInDto) {
+  async signIn({ password, email, tfaCode }: SignInDto) {
     const user = await this.usersRepository.findOneBy({
       email: email,
     });
@@ -63,6 +65,14 @@ export class AuthenticationService {
 
     if (!isValidUserPassword) {
       throw new UnauthorizedException('User passowrd does not match');
+    }
+
+    if (user.isTfaEnabled) {
+      const isValid = this.otpAuthService.verifyCode(tfaCode, user.tfaSecret);
+
+      if (!isValid) {
+        throw new UnauthorizedException('Invalud 2FA code');
+      }
     }
 
     return await this.generateTokens(user);
