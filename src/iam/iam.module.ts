@@ -1,8 +1,13 @@
-import { APP_GUARD } from '@nestjs/core';
+import Redis from 'ioredis';
 import { JwtModule } from '@nestjs/jwt';
-import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+
+import * as session from 'express-session';
+import * as passport from 'passport';
+import RedisStore from "connect-redis"
 
 import jwtConfig from './config/jwt.config';
 import { User } from '../users/entities/user.entity';
@@ -25,6 +30,9 @@ import { ApiKey } from '../users/api-keys/entities/api-key.entity';
 import { GoogleAuthenticationService } from './authentication/social/google-authentication.service';
 import { GoogleAuthenticationController } from './authentication/social/google-authentication.controller';
 import { OtpAuthenticationService } from './authentication/otp-authentication.service';
+import { SessionAuthenticationService } from './authentication/session-authentication.service';
+import { SessionAuthenticationController } from './authentication/session-authentication.controller';
+import { UserSerializer } from './authentication/serializers/user-serializer';
 
 @Module({
   imports: [
@@ -63,7 +71,29 @@ import { OtpAuthenticationService } from './authentication/otp-authentication.se
     GmailEmailPolicyHandler,
     ApiKeysService,
     OtpAuthenticationService,
+    SessionAuthenticationService,
+    UserSerializer,
   ],
-  controllers: [AuthenticationController, GoogleAuthenticationController],
+  controllers: [AuthenticationController, GoogleAuthenticationController, SessionAuthenticationController],
 })
-export class IamModule {}
+export class IamModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    const redisClient = new Redis(6379, 'localhost');
+    const redisStore = new RedisStore({ client: redisClient });
+
+    consumer.apply(
+      session({
+        store: redisStore,
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+          sameSite: true,
+          httpOnly: true,
+        },
+      }),
+      passport.initialize(),
+      passport.session(),
+    ).forRoutes('*');
+  }
+}
