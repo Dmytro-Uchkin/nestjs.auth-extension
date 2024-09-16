@@ -2,6 +2,9 @@
 
 Official NestJS on Authentication and Authorization
 
+<img width="582" alt="image" src="https://github.com/user-attachments/assets/f393f433-f4fe-4b24-80c5-578d47ff348e">
+
+
 ## Installation
 
 ```bash
