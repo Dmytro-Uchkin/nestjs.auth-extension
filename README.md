@@ -1,4 +1,4 @@
-## Description
+## NestJS Authentication and Authorization
 
 Official NestJS course on Authentication and Authorization
 
